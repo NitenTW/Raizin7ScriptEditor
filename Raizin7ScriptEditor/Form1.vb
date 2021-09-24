@@ -209,4 +209,8 @@ Public Class Form1
             End If
         End If
     End Sub
+
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
+        MessageBox.Show("RAIZIN7 Script Editor v1.0.2", lang.FormTitle, MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
 End Class
