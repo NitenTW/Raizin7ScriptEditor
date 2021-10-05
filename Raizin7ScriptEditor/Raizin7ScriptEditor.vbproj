@@ -50,6 +50,9 @@
   <PropertyGroup>
     <ApplicationIcon>RAIZIN7.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.TextEditor">
       <HintPath>D:\Downloads\ProgramSoft\C#\ICSharpCode\ICSharpCode.TextEditor\icsharpcode.texteditor.3.2.1.6466\ICSharpCode.TextEditor.dll</HintPath>
@@ -111,6 +114,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>

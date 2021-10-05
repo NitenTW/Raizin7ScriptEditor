@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports ICSharpCode.TextEditor.Document
 
 Public Class Form1
 
@@ -7,12 +8,37 @@ Public Class Form1
     Private initilizeText As String = "//" & vbNewLine & "eve_start" & vbNewLine & "eve_end"
     Private suffix As String
 
+    Private Class MyFloding
+        Implements IFoldingStrategy
+
+        Public Function GenerateFoldMarkers(document As IDocument, fileName As String, parseInformation As Object) As List(Of FoldMarker) Implements IFoldingStrategy.GenerateFoldMarkers
+            Dim list As New List(Of FoldMarker)
+            Dim start As Integer
+
+            For i As Integer = 0 To document.TotalNumberOfLines - 1
+                Dim text As String = document.GetText(document.GetLineSegment(i))
+
+                If text.StartsWith("eve_start") Then
+                    start = i
+                End If
+
+                If text.StartsWith("eve_end") Then
+                    list.Add(New FoldMarker(document, start, document.GetLineSegment(start).Length, i, 7))
+                End If
+            Next
+
+            Return list
+        End Function
+    End Class
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         TextEditorControl1.Encoding = System.Text.Encoding.UTF8
         TextEditorControl1.Font = New Font("consolas", 12)
         changed = False
         TraditionalChineseToolStripMenuItem.Checked = True
         SetXSHD()
+        TextEditorControl1.Document.FoldingManager.FoldingStrategy = New MyFloding()
+        TextEditorControl1.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
     End Sub
 
     Private Sub SetXSHD()
@@ -65,6 +91,7 @@ Public Class Form1
         suffix = String.Empty
         initilizeText = "//" & vbNewLine & "eve_start" & vbNewLine & "eve_end"
         TextEditorControl1.Text = initilizeText
+        TextEditorControl1.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
         TextEditorControl1.Refresh()
     End Sub
 
@@ -96,7 +123,9 @@ Public Class Form1
                 TextEditorControl1.Text = initilizeText
                 suffix = " - [" & openFile.FileName & "]"
                 Me.Text = lang.FormTitle & suffix
+                TextEditorControl1.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
                 changed = False
+                TextEditorControl1.Refresh()
             End If
         End Using
     End Sub
@@ -189,6 +218,7 @@ Public Class Form1
 
     Private Sub TextEditorControl1_TextChanged(sender As Object, e As EventArgs) Handles TextEditorControl1.TextChanged
         If Not changed AndAlso Not TextEditorControl1.Text = initilizeText Then
+            TextEditorControl1.Document.FoldingManager.UpdateFoldings(Nothing, Nothing)
             changed = True
             initilizeText = String.Empty
             Me.Text &= " *"
